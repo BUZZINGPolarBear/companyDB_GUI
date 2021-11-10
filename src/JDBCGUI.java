@@ -259,6 +259,9 @@ public class JDBCGUI extends JFrame implements ActionListener {
 			jsp.setBounds(0, 75, 1000, 500);
 			add(jsp); // 데이터 출력
 
+			jt.getColumn("선택").setCellRenderer(dcr);
+			jt.getColumn("선택").setCellEditor(new DefaultCellEditor(jc));    // false 체크박스 되도록 수정
+
 			if (range.equals("전체")) { // 이름 순 정렬 가능
 				dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute);
 				if (dft.getRowCount() > 0)
