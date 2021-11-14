@@ -34,6 +34,7 @@ public class JDBCGUI extends JFrame implements ActionListener {
 	JCheckBox jc = new JCheckBox();
 	JLabel selectperson;
 
+
 	String comboOptions[] = { "Address", "Sex", "Salary" };
 
 	JComboBox combo = new JComboBox(comboOptions);
@@ -48,6 +49,7 @@ public class JDBCGUI extends JFrame implements ActionListener {
 	public void mainscreen() // GUI ( JComboBox는 GUI 코드 그대로 가져와서 이벤트 등록도 이안에 있습니다!)
 	{
 		setLayout(null);// 절대 위치를 위한 설정(먼저 위치해있어야 함.
+		setTitle("DB후반기 5조 팀플");
 		// =================================================================
 		// 라벨: "검색 범위"
 		JLabel labelSearchRange = new JLabel();
@@ -239,17 +241,12 @@ public class JDBCGUI extends JFrame implements ActionListener {
 				if(checkBoxesAttributes[i].isSelected()==true)
 				{
 					dynamicAttributes.add(checkBoxesAttributes[i].getText());
-					//System.out.println(checkBoxesAttributes[i].getText());
 					selectedAttributeCnt++;
 				}
 			}
 			dynamicAttributes.add("선택");
 			attribute = new String[dynamicAttributes.size()];
-			for(int i=0; i < attribute.length; i++)
-			{
-				attribute[i] = dynamicAttributes.get(i);
-			}
-			//attribute[dynamicAttributes.size()+1] = "선택";
+			for(int i=0; i < attribute.length; i++)	attribute[i] = dynamicAttributes.get(i);
 
 			remove(jsp);//새로운 checkbox Attribute 기반의 테이블을 추가하기 위한 제거
 			dft = new DefaultTableModel(attribute, 0); // DefaultTableModel 이용하여 jtable에 데이터 저장
@@ -296,23 +293,32 @@ public class JDBCGUI extends JFrame implements ActionListener {
 		}
 
 		else if (e.getSource() == delete) {// 종료 메뉴아이템 클릭
-			//int[] rows = jt.getSelectedRows(); // 여러명 동시 삭제
 
 			int rowCnt = dao.getCountOfUserSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute);
-			System.out.println(rowCnt);
-			for (int i=0; i<rowCnt; i++) {
-//				Object str = jt.getValueAt(i, 1).toString();
-				if(jt.getValueAt(i, attribute.length-1).toString() == "true")
-				{
-					System.out.println(jt.getValueAt(i, 1).toString());
-					dao.userDelete(jt.getValueAt(i, 1).toString(), jt.getValueAt(i, 0).toString() );
-				}
-				//dao.userDelete(str.toString());
-			} // 기존의 jt.getSelectedRow 메소드를 대체하여 리스트의 행들로 삭제
 
-			dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute); // 직원정보 삭제 후 테이블 다시 출력
-//			if (dft.getRowCount() > 0)
-//				jt.setRowSelectionInterval(0, 0);
+			List<String> dynamicAttributes = new ArrayList<String>();
+			for(int i=0; i<checkBoxesAttributes.length; i++)
+			{
+				if(checkBoxesAttributes[i].isSelected()==true)	dynamicAttributes.add(checkBoxesAttributes[i].getText());
+
+			}
+			dynamicAttributes.add("선택");
+			attribute = new String[dynamicAttributes.size()];
+			for(int i=0; i < attribute.length; i++)	attribute[i] = dynamicAttributes.get(i);
+
+			if(attribute[0]=="Name" && attribute[1]=="Ssn") {
+				for (int i = 0; i < rowCnt; i++) {
+					if (jt.getValueAt(i, attribute.length - 1).toString() == "true") {
+						dao.userDelete(jt.getValueAt(i, 1).toString(), jt.getValueAt(i, 0).toString());
+					}
+					//dao.userDelete(str.toString());
+				} // 기존의 jt.getSelectedRow 메소드를 대체하여 리스트의 행들로 삭제
+
+				dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute); // 직원정보 삭제 후 테이블 다시 출력
+			}
+			else {
+				InsertDialog.messageBox(null,"삭제 기능을 수행하기 위해선 직원의 이름과 Ssn이 선택되어있어야 합니다.");
+			}
 		}
 
 		else if (e.getSource() == update) {
@@ -346,43 +352,44 @@ public class JDBCGUI extends JFrame implements ActionListener {
 			}
 
 		} // update 이벤트 끝
-//		jt.addMouseListener(new MouseListener() {
-//					@Override
-//					public void mouseClicked(MouseEvent e) {
-//						int row = jt.getSelectedRow();
-//						boolean isSelected = (boolean)jt.getValueAt(row, 8);
-//				if(isSelected) {
-//					selectedCheckBoxList.add(row);
-//				}
-//				else {
-//					selectedCheckBoxList.remove(row);
-//				}
-//			}
-//
-//			@Override
-//			public void mousePressed(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void mouseReleased(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void mouseEntered(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//
-//			@Override
-//			public void mouseExited(MouseEvent e) {
-//				// TODO Auto-generated method stub
-//
-//			}
-//		});
+		/*
+		jt.addMouseListener(new MouseListener() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						int row = jt.getSelectedRow();
+						boolean isSelected = (boolean)jt.getValueAt(row, 8);
+				if(isSelected) {
+					selectedCheckBoxList.add(row);
+				}
+				else {
+					selectedCheckBoxList.remove(row);
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 		/* 2번문제(검색범위, 검색항목) 위한 이벤트 필요 */
 
 	}
