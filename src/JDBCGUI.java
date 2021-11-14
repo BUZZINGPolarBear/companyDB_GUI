@@ -352,45 +352,6 @@ public class JDBCGUI extends JFrame implements ActionListener {
 			}
 
 		} // update 이벤트 끝
-		/*
-		jt.addMouseListener(new MouseListener() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						int row = jt.getSelectedRow();
-						boolean isSelected = (boolean)jt.getValueAt(row, 8);
-				if(isSelected) {
-					selectedCheckBoxList.add(row);
-				}
-				else {
-					selectedCheckBoxList.remove(row);
-				}
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		/* 2번문제(검색범위, 검색항목) 위한 이벤트 필요 */
 
 	}
 

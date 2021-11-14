@@ -8,5 +8,5 @@ public class main
 		JDBCGUI main = new JDBCGUI();
         main.mainscreen();    // 메인문 실행
 	}
-
 }
+
