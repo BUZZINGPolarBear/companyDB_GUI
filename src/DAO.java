@@ -119,6 +119,49 @@ public class DAO {
 			dbClose();
 		}
 	}
+	public int getCountOfUserSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // 모든 attribute 출력
+	{
+		int rowCnt = 0;
+		try {
+			st = con.createStatement();
+
+			String sql = "SELECT *"
+					+ "FROM  employee e1 ";
+			rs = st.executeQuery(sql);
+			while (rs.next()) rowCnt++;
+
+		} catch (SQLException e) {
+			System.out.println(e + "=> userSelectAll fail");
+		} finally {
+			dbClose();
+		}
+		return rowCnt;
+	}
+	public String[] getSsnOfUserSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // 모든 attribute 출력
+	{
+		int userCont = getCountOfUserSelectAll(t_model, ord, attribute);
+		int userSsnStringArrIndexCnt =0;
+		String[] userSsnStringArr = new String[userCont];
+		try {
+			st = con.createStatement();
+
+			String sql = "SELECT ssn"
+					+ "FROM  employee";
+			rs = st.executeQuery(sql);
+
+			while (rs.next())
+			{
+				userSsnStringArr[userSsnStringArrIndexCnt++] = rs.getString("ssn");
+			}
+
+
+		} catch (SQLException e) {
+			System.out.println(e + "=> userSelectAll fail");
+		} finally {
+			dbClose();
+		}
+		return userSsnStringArr;
+	}
 
 	// 검색 범위
 	public void userSelect(DefaultTableModel t_model, String sel, String Text, String ord, String[] attribute) {
@@ -211,16 +254,16 @@ public class DAO {
 
 
 
-	public int userDelete(String Name) // 직원정보 삭제
+	public int userDelete(String ssn, String name) // 직원정보 삭제
 	{
 		int result = 0;
 		try {
-			String query = "delete from employee where Fname = ?";
+			String query = "delete from employee where ssn = ?";
 			ps = con.prepareStatement(query);
-			String[] splitname = Name.split(" ");
+			String[] splitname = ssn.split(" ");
 			ps.setString(1, splitname[0]);
 			result = ps.executeUpdate();
-			InsertDialog.messageBox(null, Name + " 직원정보 삭제됨");
+			InsertDialog.messageBox(null, name + " 직원정보 삭제됨");
 		} catch (SQLException e) {
 			System.out.println(e + "=> userDelete fail");
 		} finally {
