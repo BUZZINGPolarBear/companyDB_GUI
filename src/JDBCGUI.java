@@ -7,9 +7,9 @@ import java.util.List;
 
 public class JDBCGUI extends JFrame implements ActionListener {
 
-	String searchRangeOptions[] = { "ÀüÃ¼", "ºÎ¼­", "¼ºº°", "¿¬ºÀ", "»ıÀÏ", "ºÎÇÏÁ÷¿ø" };
+	String searchRangeOptions[] = { "ì „ì²´", "ë¶€ì„œ", "ì„±ë³„", "ì—°ë´‰", "ìƒì¼", "ë¶€í•˜ì§ì›" };
 	String checkBoxOptions[] = { "Name", "Ssn", "Bdate", "Address", "Sex", "Salary", "Supervisor", "Department" };
-	String selectedSearchRangeOptions = "ÀüÃ¼";
+	String selectedSearchRangeOptions = "ì „ì²´";
 	String genderOptions[] = { "M", "F" };
 	JComboBox<String> genderComboBox = new JComboBox<String>(genderOptions);
 	String departmentOptions[] = { "Headquarters", "Administration", "Research" };
@@ -19,20 +19,20 @@ public class JDBCGUI extends JFrame implements ActionListener {
 	JTextField salaryTextField = new JTextField();
 	JTextField subordinateTextField = new JTextField();
 	JCheckBox[] checkBoxesAttributes = new JCheckBox[checkBoxOptions.length];
-	ArrayList<Integer> selectedCheckBoxList = new ArrayList<Integer>(); // Å×ÀÌºí¿¡¼­ Å¬¸¯ÇÑ row¸¦ ÀúÀåÇÏ±â À§ÇÑ ¸®½ºÆ®
-	JLabel orderLabel = new JLabel("Á¤·Ä:");
+	ArrayList<Integer> selectedCheckBoxList = new ArrayList<Integer>(); // í…Œì´ë¸”ì—ì„œ í´ë¦­í•œ rowë¥¼ ì €ì¥í•˜ê¸° ìœ„í•œ ë¦¬ìŠ¤íŠ¸
+	JLabel orderLabel = new JLabel("ì •ë ¬:");
 	JComboBox<String> searchRangeComboBox = new JComboBox<String>(searchRangeOptions); // searchRangeComboBOx
-	String orderOptions[] = { "Á¤·Ä ¾øÀ½", "¿À¸§Â÷¼ø", "³»¸²Â÷¼ø" };
+	String orderOptions[] = { "ì •ë ¬ ì—†ìŒ", "ì˜¤ë¦„ì°¨ìˆœ", "ë‚´ë¦¼ì°¨ìˆœ" };
 	JComboBox<String> orderComboBox = new JComboBox<String>(orderOptions);
 
-	String[] attribute = {"NAME", "SSN", "BDATE", "ADDRESS", "SEX", "SALARY", "SUPERVISOR", "DEPARTMENT", "¼±ÅÃ"}; // Ãâ·ÂÇÒ attributeµé
+	String[] attribute = {"NAME", "SSN", "BDATE", "ADDRESS", "SEX", "SALARY", "SUPERVISOR", "DEPARTMENT", "ì„ íƒ"}; // ì¶œë ¥í•  attributeë“¤
 	//String[] attribute = new String[10];
-	DefaultTableModel dft = new DefaultTableModel(attribute, 0); // DefaultTableModel ÀÌ¿ëÇÏ¿© jtable¿¡ µ¥ÀÌÅÍ ÀúÀå
+	DefaultTableModel dft = new DefaultTableModel(attribute, 0); // DefaultTableModel ì´ìš©í•˜ì—¬ jtableì— ë°ì´í„° ì €ì¥
 	JTable jt = new JTable(dft);
 	JScrollPane jsp = new JScrollPane(jt);
-
+	List<String> dynamicAttributes;
 	JCheckBox jc = new JCheckBox();
-	JLabel selectperson;
+	JLabel selectperson = new JLabel("ì„ íƒëœ ì‚¬ëŒ: ");
 
 
 	String comboOptions[] = { "Address", "Sex", "Salary" };
@@ -40,20 +40,21 @@ public class JDBCGUI extends JFrame implements ActionListener {
 	JComboBox combo = new JComboBox(comboOptions);
 	JTextField upText = new JTextField(20);
 	JButton update = new JButton("UPDATE");
-	JButton insert = new JButton("Á÷¿ø Ãß°¡");
-	JButton delete = new JButton("¼±ÅÃÇÑ µ¥ÀÌÅÍ »èÁ¦");
-	JButton search = new JButton("°Ë»ö");
+	JButton insert = new JButton("ì§ì› ì¶”ê°€");
+	JButton delete = new JButton("ì„ íƒí•œ ë°ì´í„° ì‚­ì œ");
+	JButton search = new JButton("ê²€ìƒ‰");
 
 	DAO dao = new DAO();
 
-	public void mainscreen() // GUI ( JComboBox´Â GUI ÄÚµå ±×´ë·Î °¡Á®¿Í¼­ ÀÌº¥Æ® µî·Ïµµ ÀÌ¾È¿¡ ÀÖ½À´Ï´Ù!)
+	public void mainscreen() // GUI ( JComboBoxëŠ” GUI ì½”ë“œ ê·¸ëŒ€ë¡œ ê°€ì ¸ì™€ì„œ ì´ë²¤íŠ¸ ë“±ë¡ë„ ì´ì•ˆì— ìˆìŠµë‹ˆë‹¤!)
 	{
-		setLayout(null);// Àı´ë À§Ä¡¸¦ À§ÇÑ ¼³Á¤(¸ÕÀú À§Ä¡ÇØÀÖ¾î¾ß ÇÔ.
-		setTitle("DBÈÄ¹İ±â 5Á¶ ÆÀÇÃ");
+		setLayout(null);
+		setTitle("DBí›„ë°˜ê¸° 5ì¡° íŒ€í”Œ");
+
 		// =================================================================
-		// ¶óº§: "°Ë»ö ¹üÀ§"
+		// ë¼ë²¨: "ê²€ìƒ‰ ë²”ìœ„"
 		JLabel labelSearchRange = new JLabel();
-		// ÄŞº¸¹Ú½º: searchRangeOptions¸¦ ¿É¼ÇÀ¸·Î °®´Â ÄŞº¸¹Ú½º »ı¼º
+		// ì½¤ë³´ë°•ìŠ¤: searchRangeOptionsë¥¼ ì˜µì…˜ìœ¼ë¡œ ê°–ëŠ” ì½¤ë³´ë°•ìŠ¤ ìƒì„±
 
 		searchRangeComboBox.addActionListener(new ActionListener() {
 			@Override
@@ -63,24 +64,24 @@ public class JDBCGUI extends JFrame implements ActionListener {
 						subordinateTextField };
 				//System.out.println(selectedSearchRangeOptions);
 
-				if (selectedSearchRangeOptions == "ÀüÃ¼") {
+				if (selectedSearchRangeOptions == "ì „ì²´") {
 					for (int i = 0; i < subComponentSet.length; i++)
 						remove(subComponentSet[i]);
 					repaint();
-				} else if (selectedSearchRangeOptions == "ºÎ¼­") {
-					// ComboBox ¿É¼ÇÀ» ¹Ù²Ü¶§¸¦ ´ëºñÇÏ±â À§ÇØ ´Ù¸¥ Component¸¦ Áö¿ì´Â ÄÚµå
+				} else if (selectedSearchRangeOptions == "ë¶€ì„œ") {
+					// ComboBox ì˜µì…˜ì„ ë°”ê¿€ë•Œë¥¼ ëŒ€ë¹„í•˜ê¸° ìœ„í•´ ë‹¤ë¥¸ Componentë¥¼ ì§€ìš°ëŠ” ì½”ë“œ
 					for (int i = 0; i < subComponentSet.length; i++) {
 						if (subComponentSet[i] == departmentComboBox)
 							continue;
 						remove(subComponentSet[i]);
 					}
-					// À§Ä¡ ¼³Á¤ ¹× Ãß°¡
+					// ìœ„ì¹˜ ì„¤ì • ë° ì¶”ê°€
 					departmentComboBox.setBounds(180, 7, 100, 25);
 					add(departmentComboBox);
 					revalidate();
 					repaint();
-				} else if (selectedSearchRangeOptions == "¼ºº°") {
-					// ComboBox ¿É¼ÇÀ» ¹Ù²Ü¶§¸¦ ´ëºñÇÏ±â À§ÇØ ´Ù¸¥ Component¸¦ Áö¿ì´Â ÄÚµå
+				} else if (selectedSearchRangeOptions == "ì„±ë³„") {
+					// ComboBox ì˜µì…˜ì„ ë°”ê¿€ë•Œë¥¼ ëŒ€ë¹„í•˜ê¸° ìœ„í•´ ë‹¤ë¥¸ Componentë¥¼ ì§€ìš°ëŠ” ì½”ë“œ
 					for (int i = 0; i < subComponentSet.length; i++) {
 						if (subComponentSet[i] == genderComboBox)
 							continue;
@@ -90,8 +91,8 @@ public class JDBCGUI extends JFrame implements ActionListener {
 					add(genderComboBox);
 					revalidate();
 					repaint();
-				} else if (selectedSearchRangeOptions == "¿¬ºÀ") {
-					// ComboBox ¿É¼ÇÀ» ¹Ù²Ü¶§¸¦ ´ëºñÇÏ±â À§ÇØ ´Ù¸¥ Component¸¦ Áö¿ì´Â ÄÚµå
+				} else if (selectedSearchRangeOptions == "ì—°ë´‰") {
+					// ComboBox ì˜µì…˜ì„ ë°”ê¿€ë•Œë¥¼ ëŒ€ë¹„í•˜ê¸° ìœ„í•´ ë‹¤ë¥¸ Componentë¥¼ ì§€ìš°ëŠ” ì½”ë“œ
 					for (int i = 0; i < subComponentSet.length; i++) {
 						if (subComponentSet[i] == salaryTextField)
 							continue;
@@ -101,8 +102,8 @@ public class JDBCGUI extends JFrame implements ActionListener {
 					add(salaryTextField);
 					salaryTextField.setVisible(true);
 					repaint();
-				} else if (selectedSearchRangeOptions == "»ıÀÏ") {
-					// ComboBox ¿É¼ÇÀ» ¹Ù²Ü¶§¸¦ ´ëºñÇÏ±â À§ÇØ ´Ù¸¥ Component¸¦ Áö¿ì´Â ÄÚµå
+				} else if (selectedSearchRangeOptions == "ìƒì¼") {
+					// ComboBox ì˜µì…˜ì„ ë°”ê¿€ë•Œë¥¼ ëŒ€ë¹„í•˜ê¸° ìœ„í•´ ë‹¤ë¥¸ Componentë¥¼ ì§€ìš°ëŠ” ì½”ë“œ
 					for (int i = 0; i < subComponentSet.length; i++) {
 						if (subComponentSet[i] == birthComboBox)
 							continue;
@@ -112,7 +113,7 @@ public class JDBCGUI extends JFrame implements ActionListener {
 					add(birthComboBox);
 					revalidate();
 					repaint();
-				} else if (selectedSearchRangeOptions == "ºÎÇÏÁ÷¿ø") {
+				} else if (selectedSearchRangeOptions == "ë¶€í•˜ì§ì›") {
 					for (int i = 0; i < subComponentSet.length; i++) {
 						if (subComponentSet[i] == subordinateTextField)
 							continue;
@@ -124,9 +125,9 @@ public class JDBCGUI extends JFrame implements ActionListener {
 				}
 			}
 		});
-		// ¶óº§: "°Ë»ö Ç×¸ñ"
+		// ë¼ë²¨: "ê²€ìƒ‰ í•­ëª©"
 		JLabel labelSearchObject = new JLabel();
-		// Ã¼Å©¹Ú½º
+		// ì²´í¬ë°•ìŠ¤
 
 		int oldXposition = 80;
 		for (int i = 0; i < checkBoxOptions.length; i++) {
@@ -141,17 +142,29 @@ public class JDBCGUI extends JFrame implements ActionListener {
 				setVisible(true);
 			}
 		}
-		//Ã¼Å©¹Ú½º ¼±ÅÃ Ç×¸ñ È®ÀÎÇÏ±â
-
+		//ì²´í¬ë°•ìŠ¤ ì„ íƒ í•­ëª© í™•ì¸í•˜ê¸°
+		jc.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String selectPersonString = "ì„ íƒëœ ì‚¬ëŒ: ";
+				for(int i=0;i<jt.getRowCount(); i++) {
+					if((boolean)jt.getValueAt(i, dynamicAttributes.size()-1) == true) {
+						selectPersonString += (String)jt.getValueAt(i, 0) + " ";
+					}
+				}
+				selectperson.setText(selectPersonString);
+			}
+		});
 
 		// =================================================================
-		// Component ³»¿ë¹° ¼³Á¤
-		JLabel selectperson = new JLabel("¼±ÅÃµÈ »ç¶÷:");
-		selectperson.setBounds(10, 650, 100, 25);
+		// Component ë‚´ìš©ë¬¼ ì„¤ì •
+		selectperson = new JLabel("ì„ íƒëœ ì‚¬ëŒ:");
+		selectperson.setBounds(10, 650, 500, 25);
 		add(selectperson);
 
-		labelSearchRange.setText("°Ë»ö ¹üÀ§");
-		labelSearchObject.setText("°Ë»ö Ç×¸ñ");
+		labelSearchRange.setText("ê²€ìƒ‰ ë²”ìœ„");
+		labelSearchObject.setText("ê²€ìƒ‰ í•­ëª©");
 
 		labelSearchRange.setBounds(10, 10, 70, 25);
 		labelSearchObject.setBounds(10, 40, 70, 25);
@@ -161,7 +174,7 @@ public class JDBCGUI extends JFrame implements ActionListener {
 		add(labelSearchObject);
 		add(searchRangeComboBox);
 
-		/* ¿©±â¼­ºÎÅÍ Ãß°¡³»¿ë */
+		/* ì—¬ê¸°ì„œë¶€í„° ì¶”ê°€ë‚´ìš© */
 		jsp.setBounds(0, 75, 1000, 500);
 		combo.setBounds(300, 600, 75, 30);
 		insert.setBounds(700, 600, 90, 30);
@@ -172,15 +185,15 @@ public class JDBCGUI extends JFrame implements ActionListener {
 		orderLabel.setBounds(330, 10, 40, 25);
 		orderComboBox.setBounds(380, 10, 90, 25);
 
-		add(jsp); // µ¥ÀÌÅÍ Ãâ·Â
-		add(combo); // ¼öÁ¤Ç×¸ñ
-		add(insert); // Á÷¿øÃß°¡ ¹öÆ°
-		add(upText); // °»½Å³»¿ë ÀûÀ» ÅØ½ºÆ®¹Ú½º
-		add(update); // UPDATE ¹öÆ°
-		add(delete); // »èÁ¦¹ö Æ°
-		add(search); // °Ë»ö ¹öÆ°
-		add(orderLabel);//Á¤·Ä ¶óº§
-		add(orderComboBox);//Á¤·Ä ÄŞº¸¹Ú½º
+		add(jsp); // ë°ì´í„° ì¶œë ¥
+		add(combo); // ìˆ˜ì •í•­ëª©
+		add(insert); // ì§ì›ì¶”ê°€ ë²„íŠ¼
+		add(upText); // ê°±ì‹ ë‚´ìš© ì ì„ í…ìŠ¤íŠ¸ë°•ìŠ¤
+		add(update); // UPDATE ë²„íŠ¼
+		add(delete); // ì‚­ì œë²„ íŠ¼
+		add(search); // ê²€ìƒ‰ ë²„íŠ¼
+		add(orderLabel);//ì •ë ¬ ë¼ë²¨
+		add(orderComboBox);//ì •ë ¬ ì½¤ë³´ë°•ìŠ¤
 
 
 
@@ -203,7 +216,7 @@ public class JDBCGUI extends JFrame implements ActionListener {
 //		new JDBCGUI();
 //	}
 
-	// Á÷¿ø ¼±ÅÃ Ã¼Å© ¹Ú½º
+	// ì§ì› ì„ íƒ ì²´í¬ ë°•ìŠ¤
 	DefaultTableCellRenderer dcr = new DefaultTableCellRenderer() {
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 													   int row, int column) {
@@ -225,17 +238,16 @@ public class JDBCGUI extends JFrame implements ActionListener {
 
 		jc.setHorizontalAlignment(JLabel.CENTER);
 
-
-		if (e.getSource() == insert) // Á÷¿øÃß°¡ ¹öÆ° Å¬¸¯½Ã Á÷¿øÃß°¡ ´ÙÀÌ¾ó·Î±× Ã¢ ³ª¿È
+		if (e.getSource() == insert) // ì§ì›ì¶”ê°€ ë²„íŠ¼ í´ë¦­ì‹œ ì§ì›ì¶”ê°€ ë‹¤ì´ì–¼ë¡œê·¸ ì°½ ë‚˜ì˜´
 		{
-			new InsertDialog(this, "Á÷¿ø Ãß°¡");
+			new InsertDialog(this, "ì§ì› ì¶”ê°€");
 		}
 
-		else if (e.getSource() == search) // °Ë»ö¹öÆ° Å¬¸¯½Ã attribute Ãâ·Â
+		else if (e.getSource() == search) // ê²€ìƒ‰ë²„íŠ¼ í´ë¦­ì‹œ attribute ì¶œë ¥
 		{
 			String range = searchRangeComboBox.getSelectedItem().toString();
 			int selectedAttributeCnt=0;
-			List<String> dynamicAttributes = new ArrayList<String>();
+			dynamicAttributes = new ArrayList<String>();
 			for(int i=0; i<checkBoxesAttributes.length; i++)
 			{
 				if(checkBoxesAttributes[i].isSelected()==true)
@@ -244,46 +256,48 @@ public class JDBCGUI extends JFrame implements ActionListener {
 					selectedAttributeCnt++;
 				}
 			}
-			dynamicAttributes.add("¼±ÅÃ");
+			dynamicAttributes.add("ì„ íƒ");
 			attribute = new String[dynamicAttributes.size()];
+
+
 			for(int i=0; i < attribute.length; i++)	attribute[i] = dynamicAttributes.get(i);
 
-			remove(jsp);//»õ·Î¿î checkbox Attribute ±â¹İÀÇ Å×ÀÌºíÀ» Ãß°¡ÇÏ±â À§ÇÑ Á¦°Å
-			dft = new DefaultTableModel(attribute, 0); // DefaultTableModel ÀÌ¿ëÇÏ¿© jtable¿¡ µ¥ÀÌÅÍ ÀúÀå
+			remove(jsp);//ìƒˆë¡œìš´ checkbox Attribute ê¸°ë°˜ì˜ í…Œì´ë¸”ì„ ì¶”ê°€í•˜ê¸° ìœ„í•œ ì œê±°
+			dft = new DefaultTableModel(attribute, 0); // DefaultTableModel ì´ìš©í•˜ì—¬ jtableì— ë°ì´í„° ì €ì¥
 			jt = new JTable(dft);
 			jsp = new JScrollPane(jt);
 
 			jsp.setBounds(0, 75, 1000, 500);
-			add(jsp); // µ¥ÀÌÅÍ Ãâ·Â
+			add(jsp); // ë°ì´í„° ì¶œë ¥
 
-			jt.getColumn("¼±ÅÃ").setCellRenderer(dcr);
-			jt.getColumn("¼±ÅÃ").setCellEditor(new DefaultCellEditor(jc));    // false Ã¼Å©¹Ú½º µÇµµ·Ï ¼öÁ¤
+			jt.getColumn("ì„ íƒ").setCellRenderer(dcr);
+			jt.getColumn("ì„ íƒ").setCellEditor(new DefaultCellEditor(jc));    // false ì²´í¬ë°•ìŠ¤ ë˜ë„ë¡ ìˆ˜ì •
 
-			if (range.equals("ÀüÃ¼")) { // ÀÌ¸§ ¼ø Á¤·Ä °¡´É
+			if (range.equals("ì „ì²´")) { // ì´ë¦„ ìˆœ ì •ë ¬ ê°€ëŠ¥
 				dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute);
 				if (dft.getRowCount() > 0)
 					jt.setRowSelectionInterval(0, 0);
-			} else if (range.equals("ºÎ¼­")) { // ÀÌ¸§ ¼ø Á¤·Ä °¡´É
+			} else if (range.equals("ë¶€ì„œ")) { // ì´ë¦„ ìˆœ ì •ë ¬ ê°€ëŠ¥
 				dao.userSelect(dft, searchRangeComboBox.getSelectedItem().toString(),
 						departmentComboBox.getSelectedItem().toString(), orderComboBox.getSelectedItem().toString(), attribute);
 				if (dft.getRowCount() > 0)
 					jt.setRowSelectionInterval(0, 0);
-			} else if (range.equals("¼ºº°")) { // ÀÌ¸§ ¼ø Á¤·Ä °¡´É
+			} else if (range.equals("ì„±ë³„")) { // ì´ë¦„ ìˆœ ì •ë ¬ ê°€ëŠ¥
 				dao.userSelect(dft, searchRangeComboBox.getSelectedItem().toString(),
 						genderComboBox.getSelectedItem().toString(), orderComboBox.getSelectedItem().toString(), attribute);
 				if (dft.getRowCount() > 0)
 					jt.setRowSelectionInterval(0, 0);
-			} else if (range.equals("¿¬ºÀ")) { // ¿¬ºÀ ¼ø Á¤·Ä °¡´É
+			} else if (range.equals("ì—°ë´‰")) { // ì—°ë´‰ ìˆœ ì •ë ¬ ê°€ëŠ¥
 				dao.userSelect(dft, searchRangeComboBox.getSelectedItem().toString(), salaryTextField.getText(),
 						orderComboBox.getSelectedItem().toString(), attribute);
 				if (dft.getRowCount() > 0)
 					jt.setRowSelectionInterval(0, 0);
-			} else if (range.equals("»ıÀÏ")) { // »ıÀÏ ¼ø Á¤·Ä °¡´É
+			} else if (range.equals("ìƒì¼")) { // ìƒì¼ ìˆœ ì •ë ¬ ê°€ëŠ¥
 				dao.userSelect(dft, searchRangeComboBox.getSelectedItem().toString(),
 						birthComboBox.getSelectedItem().toString(), orderComboBox.getSelectedItem().toString(), attribute);
 				if (dft.getRowCount() > 0)
 					jt.setRowSelectionInterval(0, 0);
-			} else if (range.equals("ºÎÇÏÁ÷¿ø")) { // Á÷¿ø ¹øÈ£ ¼ø Á¤·Ä °¡´É
+			} else if (range.equals("ë¶€í•˜ì§ì›")) { // ì§ì› ë²ˆí˜¸ ìˆœ ì •ë ¬ ê°€ëŠ¥
 				dao.userSelect(dft, searchRangeComboBox.getSelectedItem().toString(), subordinateTextField.getText(),
 						orderComboBox.getSelectedItem().toString(), attribute);
 				if (dft.getRowCount() > 0)
@@ -291,18 +305,17 @@ public class JDBCGUI extends JFrame implements ActionListener {
 			}
 
 		}
-
-		else if (e.getSource() == delete) {// Á¾·á ¸Ş´º¾ÆÀÌÅÛ Å¬¸¯
+		else if (e.getSource() == delete) {
 
 			int rowCnt = dao.getCountOfUserSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute);
-
+			selectperson.setText("ì„ íƒëœ ì‚¬ëŒ: ");
 			List<String> dynamicAttributes = new ArrayList<String>();
 			for(int i=0; i<checkBoxesAttributes.length; i++)
 			{
 				if(checkBoxesAttributes[i].isSelected()==true)	dynamicAttributes.add(checkBoxesAttributes[i].getText());
 
 			}
-			dynamicAttributes.add("¼±ÅÃ");
+			dynamicAttributes.add("ï¿½ï¿½ï¿½ï¿½");
 			attribute = new String[dynamicAttributes.size()];
 			for(int i=0; i < attribute.length; i++)	attribute[i] = dynamicAttributes.get(i);
 
@@ -312,25 +325,25 @@ public class JDBCGUI extends JFrame implements ActionListener {
 						dao.userDelete(jt.getValueAt(i, 1).toString(), jt.getValueAt(i, 0).toString());
 					}
 					//dao.userDelete(str.toString());
-				} // ±âÁ¸ÀÇ jt.getSelectedRow ¸Ş¼Òµå¸¦ ´ëÃ¼ÇÏ¿© ¸®½ºÆ®ÀÇ Çàµé·Î »èÁ¦
+				} 
 
-				dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute); // Á÷¿øÁ¤º¸ »èÁ¦ ÈÄ Å×ÀÌºí ´Ù½Ã Ãâ·Â
+				dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute);
 			}
 			else {
-				InsertDialog.messageBox(null,"»èÁ¦ ±â´ÉÀ» ¼öÇàÇÏ±â À§ÇØ¼± Á÷¿øÀÇ ÀÌ¸§°ú SsnÀÌ ¼±ÅÃµÇ¾îÀÖ¾î¾ß ÇÕ´Ï´Ù.");
+				InsertDialog.messageBox(null,"ì‚­ì œ ê¸°ëŠ¥ì„ ìˆ˜í–‰í•˜ê¸° ìœ„í•´ì„  ì§ì›ì˜ ì´ë¦„ê³¼ Ssnì´ ì„ íƒë˜ì–´ìˆì–´ì•¼ í•©ë‹ˆë‹¤.");
 			}
 		}
 
 		else if (e.getSource() == update) {
 
-			String Item = combo.getSelectedItem().toString(); // ÁÖ¼Ò, ¼ºº°, ±Ş¿© Áß¿¡ ¼±ÅÃµÈ °ª ÀúÀå
+			String Item = combo.getSelectedItem().toString(); // ì£¼ì†Œ, ì„±ë³„, ê¸‰ì—¬ ì¤‘ì— ì„ íƒëœ ê°’ ì €ì¥
 
 			if (Item.equals("Address")) {
 				int row = jt.getSelectedRow();
 				Object value = jt.getValueAt(row, 0);
 				dao.userUpdate_add(value.toString(), upText.getText());
 
-				dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute); // Á÷¿øÁ¤º¸ °»½Å ÈÄ Å×ÀÌºí ´Ù½Ã Ãâ·Â
+				dao.userSelectAll(dft, orderComboBox.getSelectedItem().toString(), attribute); // ì§ì›ì •ë³´ ê°±ì‹  í›„ í…Œì´ë¸” ë‹¤ì‹œ ì¶œë ¥
 				if (dft.getRowCount() > 0)
 					jt.setRowSelectionInterval(0, 0);
 			} else if (Item.equals("Sex")) {
@@ -350,51 +363,6 @@ public class JDBCGUI extends JFrame implements ActionListener {
 				if (dft.getRowCount() > 0)
 					jt.setRowSelectionInterval(0, 0);
 			}
-
-		} // update ÀÌº¥Æ® ³¡
-		/*
-		jt.addMouseListener(new MouseListener() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						int row = jt.getSelectedRow();
-						boolean isSelected = (boolean)jt.getValueAt(row, 8);
-				if(isSelected) {
-					selectedCheckBoxList.add(row);
-				}
-				else {
-					selectedCheckBoxList.remove(row);
-				}
-			}
-
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		/* 2¹ø¹®Á¦(°Ë»ö¹üÀ§, °Ë»öÇ×¸ñ) À§ÇÑ ÀÌº¥Æ® ÇÊ¿ä */
-
 	}
-
-
-
-
+	}
 }

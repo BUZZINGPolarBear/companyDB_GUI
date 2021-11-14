@@ -9,20 +9,20 @@ public class DAO {
 	PreparedStatement ps;
 	ResultSet rs;
 
-	String[] originalAttribute = { "Name", "Ssn", "Bdate", "Address", "Sex", "Salary", "Supervisor", "Department", "¼±ÅÃ" };
+	String[] originalAttribute = { "Name", "Ssn", "Bdate", "Address", "Sex", "Salary", "Supervisor", "Department", "ì„ íƒ" };
 
-	public DAO() // »ı¼ºÀÚ
+	public DAO() // ìƒì„±ì
 	{
 		try {
 
 			con = DriverManager.getConnection("jdbc:mysql://localhost:3306/company?serverTimezone=UTC", "root", "wnsgnl1214");
 
 		} catch (SQLException e) {
-			System.out.println(e + "=> ¿¬°á fail");
+			System.out.println(e + "=> ì—°ê²° fail");
 		}
 	}
 
-	public void dbClose() { /// DB ´İ±â
+	public void dbClose() { /// DB ë‹«ê¸°
 		try {
 			if (rs != null)
 				rs.close();
@@ -35,7 +35,7 @@ public class DAO {
 		}
 	}
 
-	public int userListInsert(InsertDialog user) // Insert ¿ë ¸Ş¼Òµå( InsertDialog¿¡¼­ »ç¿ëÇÒ ¿¹Á¤)
+	public int userListInsert(InsertDialog user) // Insert ìš© ë©”ì†Œë“œ( InsertDialogì—ì„œ ì‚¬ìš©í•  ì˜ˆì •)
 	{
 		int result = 0;
 		try {
@@ -63,7 +63,7 @@ public class DAO {
 
 	}
 
-	public void userSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // ¸ğµç attribute Ãâ·Â
+	public void userSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // ëª¨ë“  attribute ì¶œë ¥
 	{
 		try {
 			st = con.createStatement();
@@ -71,15 +71,15 @@ public class DAO {
 			String sql = "SELECT CONCAT(e1.Fname, \" \", e1.Minit, \" \", e1.Lname) AS NAME, e1.SSN, e1.BDATE, e1.ADDRESS, e1.SEX, e1.SALARY, CONCAT(e2.Fname, \" \", e2.Minit, \" \", e2.Lname) AS SUPERVISOR, d.DNAME\r\n"
 					+ "FROM  employee e1 inner join department d on e1.Dno = d.Dnumber left outer join employee e2 on e1.super_ssn = e2.ssn";
 
-			if (ord == "Á¤·Ä ¾øÀ½") {
+			if (ord == "ì •ë ¬ ì—†ìŒ") {
 				rs = st.executeQuery(sql);
-			} else if (ord == "¿À¸§Â÷¼ø") {
+			} else if (ord == "ì˜¤ë¦„ì°¨ìˆœ") {
 				rs = st.executeQuery(sql + " ORDER BY NAME");
-			} else if (ord == "³»¸²Â÷¼ø") {
+			} else if (ord == "ë‚´ë¦¼ì°¨ìˆœ") {
 				rs = st.executeQuery(sql + " ORDER BY NAME DESC");
 			}
 
-			for (int i = 0; i < t_model.getRowCount();) // ±âÁ¸ tuple Áö¿ì±â
+			for (int i = 0; i < t_model.getRowCount();) // ê¸°ì¡´ tuple ì§€ìš°ê¸°
 			{
 				t_model.removeRow(0);
 			}
@@ -104,7 +104,7 @@ public class DAO {
 					}
 				}
 				String rsString[] = new String[rsAttributes.size()];
-				for(int i=0; i < rsString.length; i++) rsString[i] = rsAttributes.get(i);//µ¿ÀûÀ¸·Î rsStringÀ» ¸¸µç´Ù.
+				for(int i=0; i < rsString.length; i++) rsString[i] = rsAttributes.get(i);//ë™ì ìœ¼ë¡œ rsStringì„ ë§Œë“ ë‹¤.
 
 				Object data[] = new Object[rsString.length+1];
 				for(int i=0; i< rsString.length; i++) data[i] = rsString[i];
@@ -119,7 +119,7 @@ public class DAO {
 			dbClose();
 		}
 	}
-	public int getCountOfUserSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // ¸ğµç attribute Ãâ·Â
+	public int getCountOfUserSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // ëª¨ë“  attribute ì¶œë ¥
 	{
 		int rowCnt = 0;
 		try {
@@ -137,7 +137,7 @@ public class DAO {
 		}
 		return rowCnt;
 	}
-	public String[] getSsnOfUserSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // ¸ğµç attribute Ãâ·Â
+	public String[] getSsnOfUserSelectAll(DefaultTableModel t_model, String ord, String attribute[]) // ëª¨ë“  attribute ì¶œë ¥
 	{
 		int userCont = getCountOfUserSelectAll(t_model, ord, attribute);
 		int userSsnStringArrIndexCnt =0;
@@ -163,7 +163,7 @@ public class DAO {
 		return userSsnStringArr;
 	}
 
-	// °Ë»ö ¹üÀ§
+	// ê²€ìƒ‰ ë²”ìœ„
 	public void userSelect(DefaultTableModel t_model, String sel, String Text, String ord, String[] attribute) {
 		try {
 			st = con.createStatement();
@@ -171,50 +171,50 @@ public class DAO {
 			String sql = "SELECT CONCAT(e1.Fname, \" \", e1.Minit, \" \", e1.Lname) AS NAME, e1.SSN, e1.BDATE, e1.ADDRESS, e1.SEX, e1.SALARY, CONCAT(e2.Fname, \" \", e2.Minit, \" \", e2.Lname) AS SUPERVISOR, d.DNAME\r\n"
 					+ "FROM  employee e1 inner join department d on e1.Dno = d.Dnumber left outer join employee e2 on e1.super_ssn = e2.ssn";
 
-			if (sel == "ºÎ¼­") {
-				if (ord == "Á¤·Ä ¾øÀ½") {
+			if (sel == "ë¶€ì„œ") {
+				if (ord == "ì •ë ¬ ì—†ìŒ") {
 					rs = st.executeQuery(sql + " WHERE d.DNAME = '" + Text + "'");
-				} else if (ord == "¿À¸§Â÷¼ø") {
+				} else if (ord == "ì˜¤ë¦„ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE d.DNAME = '" + Text + "'" + " ORDER BY NAME");
-				} else if (ord == "³»¸²Â÷¼ø") {
+				} else if (ord == "ë‚´ë¦¼ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE d.DNAME = '" + Text + "'" + " ORDER BY NAME DESC");
 				}
-			} else if (sel == "¼ºº°") {
-				if (ord == "Á¤·Ä ¾øÀ½") {
+			} else if (sel == "ì„±ë³„") {
+				if (ord == "ì •ë ¬ ì—†ìŒ") {
 					rs = st.executeQuery(sql + " WHERE e1.SEX = '" + Text + "'");
-				} else if (ord == "¿À¸§Â÷¼ø") {
+				} else if (ord == "ì˜¤ë¦„ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE e1.SEX = '" + Text + "'" + " ORDER BY NAME");
-				} else if (ord == "³»¸²Â÷¼ø") {
+				} else if (ord == "ë‚´ë¦¼ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE e1.SEX = '" + Text + "'" + " ORDER BY NAME DESC");
 				}
-			} else if (sel == "¿¬ºÀ") {
-				if (ord == "Á¤·Ä ¾øÀ½") {
+			} else if (sel == "ì—°ë´‰") {
+				if (ord == "ì •ë ¬ ì—†ìŒ") {
 					rs = st.executeQuery(sql + " WHERE e1.SALARY > '" + Text + "'");
-				} else if (ord == "¿À¸§Â÷¼ø") {
+				} else if (ord == "ì˜¤ë¦„ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE e1.SALARY > '" + Text + "'" + " ORDER BY SALARY");
-				} else if (ord == "³»¸²Â÷¼ø") {
+				} else if (ord == "ë‚´ë¦¼ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE e1.SALARY > '" + Text + "'" + " ORDER BY SALARY DESC");
 				}
-			} else if (sel == "»ıÀÏ") {
-				if (ord == "Á¤·Ä ¾øÀ½") {
+			} else if (sel == "ìƒì¼") {
+				if (ord == "ì •ë ¬ ì—†ìŒ") {
 					rs = st.executeQuery(sql + " WHERE DATE_FORMAT(e1.BDATE, '%m') = '" + Text + "'");
-				} else if (ord == "¿À¸§Â÷¼ø") {
+				} else if (ord == "ì˜¤ë¦„ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE DATE_FORMAT(e1.BDATE, '%m') = '" + Text + "'" + " ORDER BY BDATE");
-				} else if (ord == "³»¸²Â÷¼ø") {
+				} else if (ord == "ë‚´ë¦¼ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE DATE_FORMAT(e1.BDATE, '%m') = '" + Text + "'" + " ORDER BY BDATE DESC");
 				}
-			} else if (sel == "ºÎÇÏÁ÷¿ø") { // Fname, Lname, Full name Áß ÇÏ³ª ÀÔ·ÂÇÏ¸é °Ë»öµÊ
-				if (ord == "Á¤·Ä ¾øÀ½") {
+			} else if (sel == "ë¶€í•˜ì§ì›") { // Fname, Lname, Full name ì¤‘ í•˜ë‚˜ ì…ë ¥í•˜ë©´ ê²€ìƒ‰ë¨
+				if (ord == "ì •ë ¬ ì—†ìŒ") {
 					rs = st.executeQuery(sql + " WHERE CONCAT(e2.Fname, ' ', e2.Minit, ' ', e2.Lname) = '" + Text + "'" + " or e2.Fname = '" + Text + "'" + " or e2.Lname = '" + Text + "'");
-				} else if (ord == "¿À¸§Â÷¼ø") {
+				} else if (ord == "ì˜¤ë¦„ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE CONCAT(e2.Fname, ' ', e2.Minit, ' ', e2.Lname) = '" + Text + "'" + " or e2.Fname = '" + Text + "'" + " or e2.Lname = '" + Text + "'" + " ORDER BY SSN");
-				} else if (ord == "³»¸²Â÷¼ø") {
+				} else if (ord == "ë‚´ë¦¼ì°¨ìˆœ") {
 					rs = st.executeQuery(sql + " WHERE CONCAT(e2.Fname, ' ', e2.Minit, ' ', e2.Lname) = '" + Text + "'" + " or e2.Fname = '" + Text + "'" + " or e2.Lname = '" + Text + "'" + " ORDER BY SSN DESC");
 				}
 
 			}
 
-			for (int i = 0; i < t_model.getRowCount();) // ±âÁ¸ tuple Áö¿ì±â
+			for (int i = 0; i < t_model.getRowCount();) // ê¸°ì¡´ tuple ì§€ìš°ê¸°
 			{
 				t_model.removeRow(0);
 			}
@@ -236,7 +236,7 @@ public class DAO {
 					}
 				}
 				String rsString[] = new String[rsAttributes.size()];
-				for(int i=0; i < rsString.length; i++) rsString[i] = rsAttributes.get(i);//µ¿ÀûÀ¸·Î rsStringÀ» ¸¸µç´Ù.
+				for(int i=0; i < rsString.length; i++) rsString[i] = rsAttributes.get(i);//ë™ì ìœ¼ë¡œ rsStringì„ ë§Œë“ ë‹¤.
 
 				Object data[] = new Object[rsString.length+1];
 				for(int i=0; i< rsString.length; i++) data[i] = rsString[i];
@@ -254,7 +254,7 @@ public class DAO {
 
 
 
-	public int userDelete(String ssn, String name) // Á÷¿øÁ¤º¸ »èÁ¦
+	public int userDelete(String ssn, String name) // ì§ì›ì •ë³´ ì‚­ì œ
 	{
 		int result = 0;
 		try {
@@ -263,7 +263,7 @@ public class DAO {
 			String[] splitname = ssn.split(" ");
 			ps.setString(1, splitname[0]);
 			result = ps.executeUpdate();
-			InsertDialog.messageBox(null, name + " Á÷¿øÁ¤º¸ »èÁ¦µÊ");
+			InsertDialog.messageBox(null, name + " ì§ì›ì •ë³´ ì‚­ì œë¨");
 		} catch (SQLException e) {
 			System.out.println(e + "=> userDelete fail");
 		} finally {
@@ -273,8 +273,8 @@ public class DAO {
 		return result;
 	}
 
-	public int userUpdate_add(String Name, String Text) // Á÷¿øÁ¤º¸ °»½Å - ¿ø·¡ ÁÖ¼Ò, ¼ºº°, ±Ş¿©µµ ?·Î ÀÔ·Â¹Ş¾Æ¼­ ±¸ÇÏ´Â ÇÏ³ªÀÇ ÇÔ¼ö·Î ¸¸µé¾úÀ¸³ª, ÀÌ·²°æ¿ì
-	// 'address' Çü½ÄÀ¸·Î ÀÔ·ÂµÇ¼­ ¿¡·¯¹ß»ı -> ¾îÂ¿¼ö¾øÀÌ ¼¼°³·Î ³ª´®(µ¥ÀÌÅÍ °»½Å1.png ÂüÁ¶)
+	public int userUpdate_add(String Name, String Text) // ì§ì›ì •ë³´ ê°±ì‹  - ì›ë˜ ì£¼ì†Œ, ì„±ë³„, ê¸‰ì—¬ë„ ?ë¡œ ì…ë ¥ë°›ì•„ì„œ êµ¬í•˜ëŠ” í•˜ë‚˜ì˜ í•¨ìˆ˜ë¡œ ë§Œë“¤ì—ˆìœ¼ë‚˜, ì´ëŸ´ê²½ìš°
+	// 'address' í˜•ì‹ìœ¼ë¡œ ì…ë ¥ë˜ì„œ ì—ëŸ¬ë°œìƒ -> ì–´ì©”ìˆ˜ì—†ì´ ì„¸ê°œë¡œ ë‚˜ëˆ”(ë°ì´í„° ê°±ì‹ 1.png ì°¸ì¡°)
 	{
 		int result = 0;
 		try {
@@ -284,7 +284,7 @@ public class DAO {
 			ps.setString(1, Text);
 			ps.setString(2, splitname[0]);
 			result = ps.executeUpdate();
-			InsertDialog.messageBox(null, Name + " ÁÖ¼Ò º¯°æµÊ");
+			InsertDialog.messageBox(null, Name + " ì£¼ì†Œ ë³€ê²½ë¨");
 		} catch (SQLException e) {
 			System.out.println(e + "=> userUpdate fail");
 		} finally {
@@ -303,7 +303,7 @@ public class DAO {
 			ps.setString(1, Text);
 			ps.setString(2, splitname[0]);
 			result = ps.executeUpdate();
-			InsertDialog.messageBox(null, Name + " ¼ºº° º¯°æµÊ");
+			InsertDialog.messageBox(null, Name + " ì„±ë³„ ë³€ê²½ë¨");
 		} catch (SQLException e) {
 			System.out.println(e + "=> userUpdate fail");
 		} finally {
@@ -322,7 +322,7 @@ public class DAO {
 			ps.setString(1, Text);
 			ps.setString(2, splitname[0]);
 			result = ps.executeUpdate();
-			InsertDialog.messageBox(null, Name + " ±Ş¿© º¯°æµÊ");
+			InsertDialog.messageBox(null, Name + " ê¸‰ì—¬ ë³€ê²½ë¨");
 		} catch (SQLException e) {
 			System.out.println(e + "=> userUpdate fail");
 		} finally {
